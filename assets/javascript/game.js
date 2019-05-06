@@ -13,6 +13,76 @@ var mystique
 var pyro 
 var challenger
 
+
+
+function createCard(character,panel,position){
+    debugger;
+    newCard =  $("<div>")
+    newCard.addClass("card bg-dark text-light text-center js_char_card_1")
+    newCardBody =  $("<div>")
+    newCardBody.addClass("card-body")
+    newCardHeader = $("<div>")
+    //debugger;
+    newCardHeader
+        .addClass("card-header bg-info")
+        .text(character.name)
+
+        if (panel=="defender"){
+            newCard.addClass("js_defender")
+        }else if (panel=="challenger"){
+            newCard.addClass("js_challenger")
+        }
+        
+        
+        
+    
+    newCardHeader.appendTo(newCard)
+    newCardBody.appendTo(newCard)
+    newCard.appendTo(position)
+    newImage = $("<img>")
+    newImage.attr("src",character.imagePath)
+    newImage.appendTo(newCardBody)
+//debugger;
+    if(panel == "character"){
+        $(position).on("click", function () {   
+            let arrDefenders = []
+
+            switch (character.name) {
+                case "Rogue":
+                case "Storm":
+                case "Wolverine":
+                    arrDefenders = arrVillains
+                    break;
+                case "Magneto":
+                case "Mystique":
+                case "Pyro":
+                    arrDefenders = arrHeros
+                    break;
+
+            }
+           
+            challenger = selectCharacter(character.name)
+            createCard(challenger,"challenger","#challenger")
+            //debugger;
+            populateDefenders(arrDefenders)
+             $(".js_character").remove();
+         })
+
+         
+    }else if (panel=="defenders"){
+        $(position).on("click", function () { 
+            defender = selectCharacter(character.name)
+            createCard(defender,"defender","#defender")
+            this.remove();
+        })
+            
+    }
+
+    
+
+}
+
+
 resetGame()
 //Character Prototype
 function Character(name, imagePath, attackPower,counterAttackPower){
@@ -36,35 +106,37 @@ function populateCharacterArrays(){
     arrVillains.push(pyro = new Character("Pyro", "/assets/images/characters/pyro.jpg", 33, 30))
 }
 function populateDefenders(arrDefenders) {
-
+//debugger;
     //Randomly Arrange Defenders
     for (var i = 1; i <= 3; i++) {
         let charIdx = Math.floor(Math.random() * arrDefenders.length)
-        let character = arrDefenders[charIdx]
-        let newImg = $("<img>")
-        newImg
-            .attr("id", "defender" + i)
-            .attr("src", character.imagePath)
-            .attr("alt", character.name)
+         let character = arrDefenders[charIdx]
+        //  let newImg = $("<img>")
+        //  newImg
+        //      .attr("id", "defender" + i)
+        //      .attr("src", character.imagePath)
+        //      .attr("alt", character.name)       
+        
+        createCard(character,"defenders",".js_defender" + i)
 
         arrDefenders.splice(charIdx, 1)
         
-        newImg.appendTo($(".js_defender" + i));
+        //newImg.appendTo($(".js_defender" + i));
     }
 
     //Add Listeners to Defenders
-    $("#defender1").on("click", function () {        
-        defender = selectCharacter($(this).attr("alt"), "defender")
-        $(this).remove();
-    })
-    $("#defender2").on("click", function () {
-        defender = selectCharacter($(this).attr("alt"), "defender")
-        $(this).remove();
-    })
-    $("#defender3").on("click", function () {
-        defender = selectCharacter($(this).attr("alt"), "defender")
-        $(this).remove();
-    })
+    // $("#defender1").on("click", function () {        
+    //     defender = selectCharacter($(this).attr("alt"), "defender")       
+    //     $(this).remove();
+    // })
+    // $("#defender2").on("click", function () {
+    //     defender = selectCharacter($(this).attr("alt"), "defender")
+    //     $(this).remove();
+    // })
+    // $("#defender3").on("click", function () {
+    //     defender = selectCharacter($(this).attr("alt"), "defender")
+    //     $(this).remove();
+    // })
 
 }
 function resetGame() {
@@ -75,9 +147,10 @@ function resetGame() {
     for (var i = 1; i < 3; i++) {
         charIdx = Math.floor(Math.random() * arrHeros.length)
         var character = arrHeros[charIdx]
-        $("#character" + i)
-            .attr("src", character.imagePath)
-            .attr("alt", character.name)
+        // $("#character" + i)
+        //     .attr("src", character.imagePath)
+        //     .attr("alt", character.name)
+        createCard(character,"character","#character" + i)
         arrHeros.splice(charIdx, 1)
     }
 
@@ -85,10 +158,11 @@ function resetGame() {
     for (var i = 3; i < 5; i++) {
         let charIdx = Math.floor(Math.random() * arrVillains.length)
         var character = arrVillains[charIdx]
-        $("#character" + i)
-            .attr("src", character.imagePath)
-            .attr("alt", character.name)
-            .attr("data-value", arrVillains[charIdx].name.toLowerCase())
+        // $("#character" + i)
+        //     .attr("src", character.imagePath)
+        //     .attr("alt", character.name)
+        //     .attr("data-value", arrVillains[charIdx].name.toLowerCase())
+        createCard(character,"character","#character" + i)
         arrVillains.splice(charIdx, 1)
     }
 
@@ -96,24 +170,24 @@ function resetGame() {
     populateCharacterArrays()
 
     //Add listeners to Challengers
-    $("#character1").on("click", function () {
-        challenger = selectCharacter($(this).attr("alt"), "challenger")
-    })
-    $("#character2").on("click", function () {
-        challenger = selectCharacter($(this).attr("alt"), "challenger")
-    })
-    $("#character3").on("click", function () {
-        challenger = selectCharacter($(this).attr("alt"), "challenger")
-    })
-    $("#character4").on("click", function () {
-        challenger = selectCharacter($(this).attr("alt"), "challenger")
-    })
+    // $("#character1").on("click", function () {
+    //     challenger = selectCharacter($(this).attr("alt"), "challenger")
+    // })
+    // $("#character2").on("click", function () {
+    //     challenger = selectCharacter($(this).attr("alt"), "challenger")
+    // })
+    // $("#character3").on("click", function () {
+    //     challenger = selectCharacter($(this).attr("alt"), "challenger")
+    // })
+    // $("#character4").on("click", function () {
+    //     challenger = selectCharacter($(this).attr("alt"), "challenger")
+    // })
 }
 
 //Select Character When User Selects Image
-function selectCharacter(characterName, position) {
+function selectCharacter(characterName) {
 
-    var defenders = []
+    //var defenders = []
 
     switch (characterName) {
         case "Rogue":
@@ -143,20 +217,20 @@ function selectCharacter(characterName, position) {
     }
 
     //Create image of Challenger and Defender on gameBoard
-    var newImg = $("<img>");
-    newImg.attr("src", character.imagePath);
+    // var newImg = $("<img>");
+    // newImg.attr("src", character.imagePath);
 
-    if (position == "challenger") {
-        newImg.attr("id", "challenger")
-    } else if (position == "defender") {
-        newImg.attr("id", "defender")
-    }
-    newImg.appendTo($("#gameBoard"));
-    $(".js_choose_role").remove()
+    // if (position == "challenger") {
+    //     newImg.attr("id", "challenger")
+    // } else if (position == "defender") {
+    //     newImg.attr("id", "defender")
+    // }
+    // newImg.appendTo($("#gameBoard"));
+    // $(".js_choose_role").remove()
 
-    if (position == "challenger") {
-        populateDefenders(defenders)
-    }
+    // if (position == "challenger") {
+    //     populateDefenders(defenders)
+    // }
 
     return character
 }
@@ -175,7 +249,7 @@ $("#btnAttack").on("click",function(){
 
 
 
-
+//createCard(wolverine)
 
 
 
@@ -301,7 +375,7 @@ function battle(attacker, defender){
         opponent = ++opponent  
         //debugger;
 
-        $("#defender").remove()
+        $(".js_defender").remove()
 
     }
     
@@ -313,6 +387,8 @@ function battle(attacker, defender){
 
     
     if(attacker.healthPoints<=0){
+
+        $(".js_challenger").addClass("challenger-defeated")
         console.log("GAME OVER!")
         gameStatus = 1
     }
