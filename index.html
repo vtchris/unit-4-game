@@ -9,9 +9,57 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 
 <body>
+    <header>
+       <img src="assets/images/XMenLogo.jpg">    
+    </header>
+
+    <div class="container">
+        <div class="row">
+            <section class="col col-md-3">
+                <img id="character1" class="js_choose_role">
+            </section>
+            <section class="col col-md-3">
+    
+                <img id="character2" class="js_choose_role">
+    
+            </section>
+            <section class="col col-md-3">
+    
+                <img id="character3" class="js_choose_role">
+    
+            </section>
+            <section class="col col-md-3">
+    
+                <img id="character4" class="js_choose_role">
+            </section>
+        </div>
+        <div class="row">
+            <section class="col col-md-3 js_defender1"></section>
+            <section class="col col-md-3 js_defender2"></section>
+            <section class="col col-md-3 js_defender3"></section>
+
+        </div>
+        <div class="row">
+            <section class="col col-md-12">
+                <section id="gameBoard">
+                    <button id="btnAttack" class="btn btn-danger">Attack</button>
+    
+                </section>
+            </section>
+            </section>
+        </div>
+    </div>
+    
+    <section id ="defenders">
+            
+    </section>
+    
+
+
     <script src="assets/javascript/game.js"></script>
 </body>
 
