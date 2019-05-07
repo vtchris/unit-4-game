@@ -1,9 +1,21 @@
+//TODO 
+//Hide Reset until end of game
+//Hide Attack Button unless champion/defender are selected
+//Output damages at the end of each round
+//Music?
+//Add css around gameBoard? Boarder etc...
+//Cleanup and comment code
+//Check mobile and modify accordingly
+//link to portfolio
+
 //Create Variables
 var arrHeros = [];
 var arrVillains = [];
 
 var gameStatus = 0
-var opponent = 1
+var wins = 0
+
+var $insturctions = $(".js_instructions")
 
 var wolverine 
 var storm 
@@ -12,6 +24,10 @@ var magneto
 var mystique 
 var pyro 
 var challenger
+
+$("#btnReset").on("click", function(){    
+    resetGame()
+})
 
 
 
@@ -61,8 +77,8 @@ function createCard(character,panel,position){
     if(panel == "character"){
         $(position).on("click", function () {   
             let arrDefenders = []
-
-            switch (character.name) {
+debugger;
+            switch (character.name) {                
                 case "Rogue":
                 case "Storm":
                 case "Wolverine":
@@ -85,14 +101,15 @@ function createCard(character,panel,position){
 
          
     }else if (panel=="defenders"){
-
-        let insturctions = $(".js_instructions")        
-        insturctions.text("Choose enemy to fight!")
+         debugger;
+        $insturctions.text("Choose opponent to fight!")
 
         $(position).on("click", function () { 
+            $(".js_defender").remove()
+            $insturctions.text("Click Attack button to fight!")
             defender = selectCharacter(character.name)
-            createCard(defender,"defender","#defender")
-            this.remove();
+            createCard(defender,"defender","#defender")           
+            $(this).empty();
         })
             
     }
@@ -125,46 +142,47 @@ function populateCharacterArrays(){
     arrVillains.push(pyro = new Character("Pyro", "/assets/images/characters/pyro.jpg", 33, 30))
 }
 function populateDefenders(arrDefenders) {
-//debugger;
+
     //Randomly Arrange Defenders
     for (var i = 1; i <= 3; i++) {
         let charIdx = Math.floor(Math.random() * arrDefenders.length)
-         let character = arrDefenders[charIdx]
-        //  let newImg = $("<img>")
-        //  newImg
-        //      .attr("id", "defender" + i)
-        //      .attr("src", character.imagePath)
-        //      .attr("alt", character.name)       
-        
-        createCard(character,"defenders",".js_defender" + i)
+        let character = arrDefenders[charIdx]
+        createCard(character, "defenders", ".js_defender" + i)
 
+        //Remove from array so duplicate won't be selected
         arrDefenders.splice(charIdx, 1)
-        
-        //newImg.appendTo($(".js_defender" + i));
     }
-
-    //Add Listeners to Defenders
-    // $("#defender1").on("click", function () {        
-    //     defender = selectCharacter($(this).attr("alt"), "defender")       
-    //     $(this).remove();
-    // })
-    // $("#defender2").on("click", function () {
-    //     defender = selectCharacter($(this).attr("alt"), "defender")
-    //     $(this).remove();
-    // })
-    // $("#defender3").on("click", function () {
-    //     defender = selectCharacter($(this).attr("alt"), "defender")
-    //     $(this).remove();
-    // })
-
 }
 function resetGame() {
+
+    gameStatus=0
+    wins=0
+        
+    //let $challenger = $("")
+    //let $defender = $("")
+    
+    //$("#defender").empty()
+    $(".js_defenders").empty()
+    $(".js_challenger").remove()
+    $(".js_defender").remove()
+   
+
+
+    let $challengers = $("#challengers")
+    $challengers.empty()
+
+    for(var i = 1; i < 5;i++){
+        $newSection = $("<section>")
+        $newSection
+            .attr("id", "character" + i)
+            .addClass("col col-md-3 js_character")
+        $newSection.appendTo($challengers)
+    }
     
     populateCharacterArrays()
-
-    let insturctions = $(".js_instructions")
-    insturctions.addClass("text-center text-light mt-4 p-4 bg-dark")
-    insturctions.text("Choose your Champion!")
+   
+    $insturctions.addClass("text-center text-light mt-4 p-4 bg-dark")
+    $insturctions.text("Choose your Champion!")
 
     //Randomly Select 2 Heros
     for (var i = 1; i < 3; i++) {
@@ -191,20 +209,7 @@ function resetGame() {
 
     //Repopulate Charcter Arrays For Later Use
     populateCharacterArrays()
-
-    //Add listeners to Challengers
-    // $("#character1").on("click", function () {
-    //     challenger = selectCharacter($(this).attr("alt"), "challenger")
-    // })
-    // $("#character2").on("click", function () {
-    //     challenger = selectCharacter($(this).attr("alt"), "challenger")
-    // })
-    // $("#character3").on("click", function () {
-    //     challenger = selectCharacter($(this).attr("alt"), "challenger")
-    // })
-    // $("#character4").on("click", function () {
-    //     challenger = selectCharacter($(this).attr("alt"), "challenger")
-    // })
+  
 }
 
 //Select Character When User Selects Image
@@ -280,17 +285,17 @@ $("#btnAttack").on("click",function(){
 
 function testSimulator(attacker, defender1, defender2, defender3){
 
-    while(gameStatus==0 && opponent==1){
+    while(gameStatus==0 && wins==0){
         battle(attacker,defender1)
         //debugger;
 
     }
-    while(gameStatus==0 && opponent==2){
+    while(gameStatus==0 && wins==1){
         battle(attacker,defender2)
         //debugger;
 
     }
-    while(gameStatus==0 && opponent==3){
+    while(gameStatus==0 && wins==2){
         battle(attacker,defender3)
         //debugger;
 
@@ -301,65 +306,65 @@ function testSimulator(attacker, defender1, defender2, defender3){
 }
 //Magneto Attacks
 //  gameStatus=0
-//  opponent=1  
+//  wins=0  
 //  testSimulator(magneto,storm,wolverine, rogue)
 //  console.log("--------------------------------------------------------------------")
 //  resetGame()
 //  gameStatus=0
-//  opponent=1  
+//  wins=0  
 //  testSimulator(magneto,wolverine,storm, rogue)
 // console.log("--------------------------------------------------------------------")
 // resetGame()
 // gameStatus=0
-// opponent=1  
+// wins=0  
 // testSimulator(magneto,rogue,wolverine, storm)
 // console.log("--------------------------------------------------------------------")
 //Wolverine Attacks
 // resetGame()
 // gameStatus=0
-// opponent=1  
+// wins=0  
 // testSimulator(wolverine,magneto,mystique, pyro)
 // console.log("--------------------------------------------------------------------")
 // resetGame()
 // gameStatus=0
-// opponent=1  
+// wins=0  
 // testSimulator(wolverine,mystique,pyro, magneto)
 // console.log("--------------------------------------------------------------------")
 // resetGame()
 // gameStatus=0
-// opponent=1  
+// wins=0  
 // testSimulator(wolverine,pyro,mystique, magneto)
 // //Mystique Attacks
 // resetGame()
 // gameStatus=0
-// opponent=1  
+// wins=0  
 // testSimulator(mystique,storm,wolverine, rogue)
 // console.log("--------------------------------------------------------------------")
 // resetGame()
 // gameStatus=0
-// opponent=1  
+// wins=0  
 // testSimulator(mystique,wolverine,storm, rogue)
 // console.log("--------------------------------------------------------------------")
 // resetGame()
 // gameStatus=0
-// opponent=1  
+// wins=0  
 // testSimulator(mystique,rogue,wolverine, storm)
 // console.log("--------------------------------------------------------------------")
 
 //Mystique Attacks
 // resetGame()
 // gameStatus=0
-// opponent=1  
+// wins=0  
 // testSimulator(pyro,storm,wolverine, rogue)
 // console.log("--------------------------------------------------------------------")
 // resetGame()
 // gameStatus=0
-// opponent=1  
+// wins=0  
 // testSimulator(pyro,wolverine,storm, rogue)
 // console.log("--------------------------------------------------------------------")
 // resetGame()
 // gameStatus=0
-// opponent=1  
+// wins=0  
 // testSimulator(pyro,rogue,wolverine, storm)
 // console.log("--------------------------------------------------------------------")
 
@@ -409,7 +414,7 @@ function battle(attacker, defender){
         }else if (challenger.healthPoints <=0){
             challengerHeathDisplay.removeClass("bg-success bg-warning")
             challengerHeathDisplay.addClass("bg-danger")
-            challengerHeathDisplay.text("Heath: 0")
+            challengerHeathDisplay.text("Health: 0")
         }
 
         
@@ -420,10 +425,16 @@ function battle(attacker, defender){
 
         attacker.experience = attacker.experience + .25
         //battleStatus = 1
-        opponent = ++opponent  
+        wins = ++wins  
         //debugger;
 
         $(".js_defender").remove()
+
+        if(wins < 3 && attacker.healthPoints > 0){
+            $insturctions.text(attacker.name.toUpperCase() + " WINS! Choose next opponent!")
+        }else{
+            $insturctions.text(attacker.name.toUpperCase() + " UNDEFEATED CHAMPION!")
+        }
 
     }
     
@@ -437,6 +448,7 @@ function battle(attacker, defender){
     if(attacker.healthPoints<=0){
 
         $(".js_challenger").addClass("challenger-defeated")
+        $insturctions.text(attacker.name.toUpperCase() + " was defeated by " + defender.name.toUpperCase())
         console.log("GAME OVER!")
         gameStatus = 1
     }
