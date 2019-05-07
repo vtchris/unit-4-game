@@ -21,3 +21,6 @@ img{
 .challenger-defeated{
     opacity: .5;
 }
+.card{
+    cursor: pointer;
+}

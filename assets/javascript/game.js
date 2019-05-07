@@ -16,28 +16,43 @@ var challenger
 
 
 function createCard(character,panel,position){
-    debugger;
+    //debugger;
     newCard =  $("<div>")
     newCard.addClass("card bg-dark text-light text-center js_char_card_1")
     newCardBody =  $("<div>")
     newCardBody.addClass("card-body")
     newCardHeader = $("<div>")
+    newCardHeader.appendTo(newCard)
+    newCardBody.appendTo(newCard)
     //debugger;
     newCardHeader
         .addClass("card-header bg-info")
-        .text(character.name)
+        .text(character.name.toUpperCase())
 
         if (panel=="defender"){
             newCard.addClass("js_defender")
+
+            let newCardFooter = $("<div>")
+            newCardFooter
+                .addClass("card-footer bg-success js_defenderHealth p-1")  
+            newCardFooter.text("Health: " + character.healthPoints)          
+            newCardFooter.appendTo(newCard)  
+
         }else if (panel=="challenger"){
             newCard.addClass("js_challenger")
+
+            let newCardFooter = $("<div>")
+            newCardFooter
+                .addClass("card-footer bg-success js_challengerHealth p-1")  
+            newCardFooter.text("Health: " + character.healthPoints)          
+            newCardFooter.appendTo(newCard)    
+
         }
         
         
         
     
-    newCardHeader.appendTo(newCard)
-    newCardBody.appendTo(newCard)
+    
     newCard.appendTo(position)
     newImage = $("<img>")
     newImage.attr("src",character.imagePath)
@@ -70,6 +85,10 @@ function createCard(character,panel,position){
 
          
     }else if (panel=="defenders"){
+
+        let insturctions = $(".js_instructions")        
+        insturctions.text("Choose enemy to fight!")
+
         $(position).on("click", function () { 
             defender = selectCharacter(character.name)
             createCard(defender,"defender","#defender")
@@ -142,6 +161,10 @@ function populateDefenders(arrDefenders) {
 function resetGame() {
     
     populateCharacterArrays()
+
+    let insturctions = $(".js_instructions")
+    insturctions.addClass("text-center text-light mt-4 p-4 bg-dark")
+    insturctions.text("Choose your Champion!")
 
     //Randomly Select 2 Heros
     for (var i = 1; i < 3; i++) {
@@ -357,6 +380,17 @@ function battle(attacker, defender){
 
     attackerPower = attackerPower + 5
     attacker.attackPower = attackerPower
+
+    let defenderHeathDisplay = $(".js_defenderHealth")
+    //debugger;
+    defenderHeathDisplay.text("Health: " + defender.healthPoints)
+
+    if (defender.healthPoints < 80 && defender.healthPoints > 0) {
+        defenderHeathDisplay.removeClass("bg-success")
+        defenderHeathDisplay.addClass("bg-warning text-dark")
+    }
+
+    
     
 
     if(defender.healthPoints > 0){
@@ -365,6 +399,20 @@ function battle(attacker, defender){
         var defenderAttack = Math.floor(defender.counterAttackPower * defenderStrength) 
       
         attacker.healthPoints -= defenderAttack
+
+        let challengerHeathDisplay = $(".js_challengerHealth")
+        challengerHeathDisplay.text("Health: " + challenger.healthPoints)
+
+        if (challenger.healthPoints < 80 && challenger.healthPoints > 0){
+            challengerHeathDisplay.removeClass("bg-success")
+            challengerHeathDisplay.addClass("bg-warning text-dark")
+        }else if (challenger.healthPoints <=0){
+            challengerHeathDisplay.removeClass("bg-success bg-warning")
+            challengerHeathDisplay.addClass("bg-danger")
+            challengerHeathDisplay.text("Heath: 0")
+        }
+
+        
 
     }else{
 
