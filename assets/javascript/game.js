@@ -1,6 +1,4 @@
 //TODO 
-//Hide Reset until end of game
-//Hide Attack Button unless champion/defender are selected
 //Output damages at the end of each round
 //Music?
 //Add css around gameBoard? Boarder etc...
@@ -15,7 +13,9 @@ var arrVillains = [];
 var gameStatus = 0
 var wins = 0
 
-var $insturctions = $(".js_instructions")
+var $instructions = $(".js_instructions")
+var $btnAttack = $("#btnAttack")
+var $btnReset = $("#btnReset")
 
 var wolverine 
 var storm 
@@ -56,7 +56,9 @@ function createCard(character,panel,position){
 
         }else if (panel=="challenger"){
             newCard.addClass("js_challenger")
-
+            newBadge = $("<div>")
+            newBadge.addClass("badge")
+            newBadge.appendTo(newCardHeader)
             let newCardFooter = $("<div>")
             newCardFooter
                 .addClass("card-footer bg-success js_challengerHealth p-1")  
@@ -101,15 +103,16 @@ debugger;
 
          
     }else if (panel=="defenders"){
-         debugger;
-        $insturctions.text("Choose opponent to fight!")
+         //debugger;
+        $instructions.text("Choose opponent to fight!")
 
         $(position).on("click", function () { 
             $(".js_defender").remove()
-            $insturctions.text("Click Attack button to fight!")
+            $instructions.text("Click Attack button to fight!")
             defender = selectCharacter(character.name)
             createCard(defender,"defender","#defender")           
             $(this).empty();
+            $btnAttack.removeClass("invisible");
         })
             
     }
@@ -157,6 +160,7 @@ function resetGame() {
 
     gameStatus=0
     wins=0
+    $btnReset.addClass("invisible");
         
     //let $challenger = $("")
     //let $defender = $("")
@@ -181,8 +185,8 @@ function resetGame() {
     
     populateCharacterArrays()
    
-    $insturctions.addClass("text-center text-light mt-4 p-4 bg-dark")
-    $insturctions.text("Choose your Champion!")
+    $instructions.addClass("text-center text-light mt-4 p-4 bg-dark")
+    $instructions.text("Choose your Champion!")
 
     //Randomly Select 2 Heros
     for (var i = 1; i < 3; i++) {
@@ -394,8 +398,6 @@ function battle(attacker, defender){
         defenderHeathDisplay.removeClass("bg-success")
         defenderHeathDisplay.addClass("bg-warning text-dark")
     }
-
-    
     
 
     if(defender.healthPoints > 0){
@@ -415,25 +417,33 @@ function battle(attacker, defender){
             challengerHeathDisplay.removeClass("bg-success bg-warning")
             challengerHeathDisplay.addClass("bg-danger")
             challengerHeathDisplay.text("Health: 0")
+            $btnAttack.addClass("invisible");
+            $btnReset.removeClass("invisible");
         }
 
         
 
     }else{
 
+        var $badge =  $(".badge")
         console.log("YOU WIN!")
 
         attacker.experience = attacker.experience + .25
         //battleStatus = 1
         wins = ++wins  
-        //debugger;
+        debugger;
+        $badge.html("<strong>" + wins + "</strong>");
 
         $(".js_defender").remove()
+        $btnAttack.addClass("invisible");
 
         if(wins < 3 && attacker.healthPoints > 0){
-            $insturctions.text(attacker.name.toUpperCase() + " WINS! Choose next opponent!")
+            $instructions.text(attacker.name.toUpperCase() + " WINS! Choose next opponent!")
+            
         }else{
-            $insturctions.text(attacker.name.toUpperCase() + " UNDEFEATED CHAMPION!")
+            $btnReset.removeClass("invisible");
+         
+            $instructions.text(attacker.name.toUpperCase() + " UNDEFEATED CHAMPION!")
         }
 
     }
@@ -448,7 +458,7 @@ function battle(attacker, defender){
     if(attacker.healthPoints<=0){
 
         $(".js_challenger").addClass("challenger-defeated")
-        $insturctions.text(attacker.name.toUpperCase() + " was defeated by " + defender.name.toUpperCase())
+        $instructions.text(attacker.name.toUpperCase() + " was defeated by " + defender.name.toUpperCase())
         console.log("GAME OVER!")
         gameStatus = 1
     }
