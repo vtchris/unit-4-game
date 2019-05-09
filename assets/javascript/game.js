@@ -13,9 +13,10 @@ var arrVillains = [];
 var gameStatus = 0
 var wins = 0
 
-var $instructions = $(".js_instructions")
 var $btnAttack = $("#btnAttack")
 var $btnReset = $("#btnReset")
+var $challengers = $("#challengers")
+var $instructions = $(".js_instructions")
 
 var wolverine 
 var storm 
@@ -25,17 +26,143 @@ var mystique
 var pyro 
 var challenger
 
-$("#btnReset").on("click", function(){    
-    resetGame()
+$("#btnAttack").on("click",function(){
+   
+    battle(challenger,defender);
+    
 })
 
+$("#btnReset").on("click", function(){    
+
+    resetGame();
+
+})
+
+resetGame()
+
+function battle(attacker, defender){
+    // console.log("START")
+    // console.log( attacker)
+    // console.log(defender)
+    
+    //Determine Strength and Power of Attacker
+    let playerStrength = (attacker.healthPoints * .01)
+    let playerPower = attacker.attackPower
+    let playerAttack = Math.floor(attacker.experience * playerPower * playerStrength) 
 
 
-function createCard(character,panel,position){
+
+    //Apply Damage to Defender
+    defender.healthPoints -= playerAttack
+    let $defenderHeathDisplay = $(".js_defenderHealth")
+    $defenderHeathDisplay.text("Health: " + defender.healthPoints)
+
+    if (defender.healthPoints < 80 && defender.healthPoints > 0) {
+        $defenderHeathDisplay.removeClass("bg-success")
+        $defenderHeathDisplay.addClass("bg-warning text-dark")
+    }
+
+
+
+    
+
+    
+   
+    
+
+    
+    
+
+    if(defender.healthPoints > 0){
+
+        var defenderStrength =  (defender.healthPoints * .01)
+        var defenderAttack = Math.floor(defender.counterAttackPower * defenderStrength) 
+      debugger;
+        attacker.healthPoints -= defenderAttack
+
+        let challengerHeathDisplay = $(".js_challengerHealth")
+        challengerHeathDisplay.text("Health: " + challenger.healthPoints)
+
+        if (challenger.healthPoints < 80 && challenger.healthPoints > 0){
+            challengerHeathDisplay.removeClass("bg-success")
+            challengerHeathDisplay.addClass("bg-warning text-dark")
+        }else if (challenger.healthPoints <=0){
+            challengerHeathDisplay.removeClass("bg-success bg-warning")
+            challengerHeathDisplay.addClass("bg-danger")
+            challengerHeathDisplay.text("Health: 0")
+            $btnAttack.addClass("invisible");
+            $btnReset.removeClass("invisible");
+        }
+
+        
+
+    }else{
+        //console.log("YOU WIN!")
+
+        //Increment Wins
+        wins = ++wins  
+        var $badge =  $(".badge")
+        $badge.html("<strong>" + wins + "</strong>");
+        
+        //Clear Defender and Remove Attack button
+        $("#defender").empty()
+        $btnAttack.addClass("invisible");
+
+        if(wins < 3 && attacker.healthPoints > 0){
+            attacker.experience = attacker.experience + .25
+            $instructions.text(attacker.name.toUpperCase() + " WINS! Choose next opponent!")
+            
+        }else{
+            $btnReset.removeClass("invisible");
+         
+            $instructions.text(attacker.name.toUpperCase() + " UNDEFEATED CHAMPION!")
+        }
+
+    }
+    
+    console.log(attackerPower)
     //debugger;
-    newCard =  $("<div>")
-    newCard.addClass("card bg-dark text-light text-center js_char_card_1")
-    newCardBody =  $("<div>")
+    console.log("END")
+    console.log(attacker)
+    console.log(defender)
+
+
+    
+    
+    if (attacker.healthPoints <= 0) {
+        //Player Defeated
+        //console.log("GAME OVER!")
+
+        gameStatus = 1
+        $(".js_challenger").addClass("challenger-defeated")
+        $instructions.text(attacker.name.toUpperCase() + " was defeated by " + defender.name.toUpperCase())
+    } else {
+        //Increment Player Power for next round
+        playerPower = playerPower + 5
+        attacker.attackPower = playerPower
+    }
+
+
+    
+    
+}
+
+
+//Character Prototype
+function Character(name, imagePath, attackPower,counterAttackPower){
+    this.name = name;
+    this.imagePath = imagePath;
+    this.attackPower = attackPower;
+    this.counterAttackPower = counterAttackPower;
+    this.healthPoints = 100;
+    this.experience = 1;
+}
+function createCard(character, panel, position) {
+    //debugger;
+    newCard = $("<div>")
+    //newCard.addClass("card bg-dark text-light text-center js_char_card_1")
+    newCard.addClass("card bg-dark text-light text-center")
+    newCardBody = $("<div>")
     newCardBody.addClass("card-body")
     newCardHeader = $("<div>")
     newCardHeader.appendTo(newCard)
@@ -45,42 +172,42 @@ function createCard(character,panel,position){
         .addClass("card-header bg-info")
         .text(character.name.toUpperCase())
 
-        if (panel=="defender"){
-            newCard.addClass("js_defender")
+    if (panel == "defender") {
+        newCard.addClass("js_defender")
 
-            let newCardFooter = $("<div>")
-            newCardFooter
-                .addClass("card-footer bg-success js_defenderHealth p-1")  
-            newCardFooter.text("Health: " + character.healthPoints)          
-            newCardFooter.appendTo(newCard)  
+        let newCardFooter = $("<div>")
+        newCardFooter
+            .addClass("card-footer bg-success js_defenderHealth p-1")
+        newCardFooter.text("Health: " + character.healthPoints)
+        newCardFooter.appendTo(newCard)
 
-        }else if (panel=="challenger"){
-            newCard.addClass("js_challenger")
-            newBadge = $("<div>")
-            newBadge.addClass("badge")
-            newBadge.appendTo(newCardHeader)
-            let newCardFooter = $("<div>")
-            newCardFooter
-                .addClass("card-footer bg-success js_challengerHealth p-1")  
-            newCardFooter.text("Health: " + character.healthPoints)          
-            newCardFooter.appendTo(newCard)    
+    } else if (panel == "challenger") {
+        newCard.addClass("js_challenger")
+        newBadge = $("<div>")
+        newBadge.addClass("badge")
+        newBadge.appendTo(newCardHeader)
+        let newCardFooter = $("<div>")
+        newCardFooter
+            .addClass("card-footer bg-success js_challengerHealth p-1")
+        newCardFooter.text("Health: " + character.healthPoints)
+        newCardFooter.appendTo(newCard)
 
-        }
-        
-        
-        
-    
-    
+    }
+
+
+
+
+
     newCard.appendTo(position)
     newImage = $("<img>")
-    newImage.attr("src",character.imagePath)
+    newImage.attr("src", character.imagePath)
     newImage.appendTo(newCardBody)
-//debugger;
-    if(panel == "character"){
-        $(position).on("click", function () {   
+    //debugger;
+    if (panel == "character") {
+        $(position).on("click", function () {
             let arrDefenders = []
-debugger;
-            switch (character.name) {                
+
+            switch (character.name) {
                 case "Rogue":
                 case "Storm":
                 case "Wolverine":
@@ -93,45 +220,56 @@ debugger;
                     break;
 
             }
-           
-            challenger = selectCharacter(character.name)
-            createCard(challenger,"challenger","#challenger")
-            //debugger;
-            populateDefenders(arrDefenders)
-             $(".js_character").remove();
-         })
 
-         
-    }else if (panel=="defenders"){
-         //debugger;
+            challenger = selectCharacter(character.name)
+            createCard(challenger, "challenger", "#challenger")
+            //debugger;
+
+            $(".js_character").remove();
+
+
+            for (var i = 1; i < 5; i++) {
+                $newSection = $("<section>")
+                $newSection
+                    .attr("id", "defender" + i)
+                    .addClass("col col-md-3 js_defender")
+
+
+                $newSection.appendTo($challengers)
+
+
+            }
+
+            populateDefenders(arrDefenders)
+
+        })
+
+
+    } else if (panel == "defenders") {
+        //}else if (panel=="challenger"){
+        //debugger;
         $instructions.text("Choose opponent to fight!")
 
-        $(position).on("click", function () { 
-            $(".js_defender").remove()
+        $(position).on("click", function () {
+
+            // $(".js_defender").remove()
             $instructions.text("Click Attack button to fight!")
             defender = selectCharacter(character.name)
-            createCard(defender,"defender","#defender")           
+            createCard(defender, "defender", "#defender")
+            debugger;
             $(this).empty();
             $btnAttack.removeClass("invisible");
         })
-            
+
     }
 
-    
+
 
 }
 
 
-resetGame()
-//Character Prototype
-function Character(name, imagePath, attackPower,counterAttackPower){
-    this.name = name;
-    this.imagePath = imagePath;
-    this.attackPower = attackPower;
-    this.counterAttackPower = counterAttackPower;
-    this.healthPoints = 100;
-    this.experience = 1;
-}
+
+
 
 function populateCharacterArrays(){
     arrHeros = []
@@ -145,12 +283,13 @@ function populateCharacterArrays(){
     arrVillains.push(pyro = new Character("Pyro", "/assets/images/characters/pyro.jpg", 33, 30))
 }
 function populateDefenders(arrDefenders) {
-
+debugger;
     //Randomly Arrange Defenders
     for (var i = 1; i <= 3; i++) {
         let charIdx = Math.floor(Math.random() * arrDefenders.length)
         let character = arrDefenders[charIdx]
-        createCard(character, "defenders", ".js_defender" + i)
+        //createCard(character, "defenders", ".js_defender" + i)
+        createCard(character, "defenders", "#defender" + i)
 
         //Remove from array so duplicate won't be selected
         arrDefenders.splice(charIdx, 1)
@@ -172,7 +311,7 @@ function resetGame() {
    
 
 
-    let $challengers = $("#challengers")
+    
     $challengers.empty()
 
     for(var i = 1; i < 5;i++){
@@ -219,8 +358,6 @@ function resetGame() {
 //Select Character When User Selects Image
 function selectCharacter(characterName) {
 
-    //var defenders = []
-
     switch (characterName) {
         case "Rogue":
             character = rogue
@@ -247,34 +384,13 @@ function selectCharacter(characterName) {
             defenders = arrHeros
             break;
     }
-
-    //Create image of Challenger and Defender on gameBoard
-    // var newImg = $("<img>");
-    // newImg.attr("src", character.imagePath);
-
-    // if (position == "challenger") {
-    //     newImg.attr("id", "challenger")
-    // } else if (position == "defender") {
-    //     newImg.attr("id", "defender")
-    // }
-    // newImg.appendTo($("#gameBoard"));
-    // $(".js_choose_role").remove()
-
-    // if (position == "challenger") {
-    //     populateDefenders(defenders)
-    // }
-
+  
     return character
 }
 
 
 
-$("#btnAttack").on("click",function(){
-    console.log("Challenger: " + challenger.imagePath)
 
-
-    battle(challenger,defender)
-})
 
 
 
@@ -374,96 +490,3 @@ function testSimulator(attacker, defender1, defender2, defender3){
 
 
 
-function battle(attacker, defender){
-    console.log("START")
-    console.log( attacker)
-    console.log(defender)
-    
-    var playerStrength = (attacker.healthPoints * .01)
-    var attackerPower = attacker.attackPower
-    var playerAttack = Math.floor(attacker.experience * attacker.attackPower * playerStrength) 
-
-    defender.healthPoints -= playerAttack
-
-    
-
-    attackerPower = attackerPower + 5
-    attacker.attackPower = attackerPower
-
-    let defenderHeathDisplay = $(".js_defenderHealth")
-    //debugger;
-    defenderHeathDisplay.text("Health: " + defender.healthPoints)
-
-    if (defender.healthPoints < 80 && defender.healthPoints > 0) {
-        defenderHeathDisplay.removeClass("bg-success")
-        defenderHeathDisplay.addClass("bg-warning text-dark")
-    }
-    
-
-    if(defender.healthPoints > 0){
-
-        var defenderStrength =  (defender.healthPoints * .01)
-        var defenderAttack = Math.floor(defender.counterAttackPower * defenderStrength) 
-      
-        attacker.healthPoints -= defenderAttack
-
-        let challengerHeathDisplay = $(".js_challengerHealth")
-        challengerHeathDisplay.text("Health: " + challenger.healthPoints)
-
-        if (challenger.healthPoints < 80 && challenger.healthPoints > 0){
-            challengerHeathDisplay.removeClass("bg-success")
-            challengerHeathDisplay.addClass("bg-warning text-dark")
-        }else if (challenger.healthPoints <=0){
-            challengerHeathDisplay.removeClass("bg-success bg-warning")
-            challengerHeathDisplay.addClass("bg-danger")
-            challengerHeathDisplay.text("Health: 0")
-            $btnAttack.addClass("invisible");
-            $btnReset.removeClass("invisible");
-        }
-
-        
-
-    }else{
-
-        var $badge =  $(".badge")
-        console.log("YOU WIN!")
-
-        attacker.experience = attacker.experience + .25
-        //battleStatus = 1
-        wins = ++wins  
-        debugger;
-        $badge.html("<strong>" + wins + "</strong>");
-
-        $(".js_defender").remove()
-        $btnAttack.addClass("invisible");
-
-        if(wins < 3 && attacker.healthPoints > 0){
-            $instructions.text(attacker.name.toUpperCase() + " WINS! Choose next opponent!")
-            
-        }else{
-            $btnReset.removeClass("invisible");
-         
-            $instructions.text(attacker.name.toUpperCase() + " UNDEFEATED CHAMPION!")
-        }
-
-    }
-    
-    console.log(attackerPower)
-    //debugger;
-    console.log("END")
-    console.log(attacker)
-    console.log(defender)
-
-    
-    if(attacker.healthPoints<=0){
-
-        $(".js_challenger").addClass("challenger-defeated")
-        $instructions.text(attacker.name.toUpperCase() + " was defeated by " + defender.name.toUpperCase())
-        console.log("GAME OVER!")
-        gameStatus = 1
-    }
-
-
-    
-    
-}
