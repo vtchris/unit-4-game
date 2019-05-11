@@ -266,13 +266,13 @@ function createCard(character, panel, position) {
 function populateCharacterArrays(){
     arrHeros = []
     arrHeros.push(wolverine = new Character("Wolverine", "assets/images/characters/wolverine.jpg", 32, 20))
-    arrHeros.push(storm = new Character("Storm", "/assets/images/characters/storm.jpg", 33, 30))
-    arrHeros.push(rogue = new Character("Rogue", "/assets/images/characters/rogue.jpg", 34, 75))
+    arrHeros.push(storm = new Character("Storm", "assets/images/characters/storm.jpg", 33, 30))
+    arrHeros.push(rogue = new Character("Rogue", "assets/images/characters/rogue.jpg", 34, 75))
 
     arrVillains = []
-    arrVillains.push(magneto = new Character("Magneto", "/assets/images/characters/magneto.jpg", 34, 75))
-    arrVillains.push(mystique = new Character("Mystique", "/assets/images/characters/mystique.jpg", 32, 20))
-    arrVillains.push(pyro = new Character("Pyro", "/assets/images/characters/pyro.jpg", 33, 30))
+    arrVillains.push(magneto = new Character("Magneto", "assets/images/characters/magneto.jpg", 34, 75))
+    arrVillains.push(mystique = new Character("Mystique", "assets/images/characters/mystique.jpg", 32, 20))
+    arrVillains.push(pyro = new Character("Pyro", "assets/images/characters/pyro.jpg", 33, 30))
 }
 function populateDefenders(arrDefenders) {
 
