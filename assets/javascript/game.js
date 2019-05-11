@@ -1,6 +1,4 @@
 //TODO 
-//Add css around gameBoard? Boarder etc...
-//Cleanup and comment code
 //Check mobile and modify accordingly
 //link to portfolio
 
@@ -14,6 +12,8 @@ var wins = 0
 var $btnAttack = $("#btnAttack")
 var $btnReset = $("#btnReset")
 var $challengers = $("#challengers")
+var $defendersHeaderRow = $("#defendersHeaderRow")
+var $gameBoard = $("#gameBoard")
 var $instructions = $(".js_instructions")
 var $report1 = $("#report1")
 var $report2 = $("#report2")
@@ -34,11 +34,15 @@ $("#btnAttack").on("click",function(){
 
 $("#btnReset").on("click", function(){    
 
-    resetGame();
+    //resetGame();
+    populateCharacterArrays();
+    resetGame(arrHeros.slice(0),arrVillains.slice(0))
 
 })
+
 populateCharacterArrays();
-resetGame(arrHeros,arrVillains)
+resetGame(arrHeros.slice(0),arrVillains.slice(0))
+//resetGame()
 
 function battle(challenger, defender){
     //  console.log("START")
@@ -49,7 +53,7 @@ function battle(challenger, defender){
     let playerStrength = (challenger.healthPoints * .01)
     let playerPower = challenger.attackPower
     let playerAttack = Math.floor(challenger.experience * playerPower * playerStrength) 
-    $report1.text("You attacked " + defender.name + " for " + playerPower + " points of damage.")
+    $report1.text("You attacked " + defender.name + " for " + playerAttack + " points of damage.")
 
     //Apply Damage to Defender
     defender.healthPoints -= playerAttack
@@ -86,8 +90,8 @@ function battle(challenger, defender){
             $(".js_challenger").addClass("challenger-defeated")
             $instructions.text(challenger.name.toUpperCase() + " was defeated by " + defender.name.toUpperCase())
                                   
-            $btnAttack.addClass("invisible");
-            $btnReset.removeClass("invisible");
+            $btnAttack.addClass("display_none");
+            $btnReset.removeClass("display_none");
 
         } else {
             //Increment Player Power for next round
@@ -107,9 +111,10 @@ function battle(challenger, defender){
         $badge.html("<strong>" + wins + "</strong>");
         $report2.empty();
         
+        
         //Clear Defender and Remove Attack button
         $("#defender").empty()
-        $btnAttack.addClass("invisible");
+        $btnAttack.addClass("display_none");
 
         if(wins < 3 && challenger.healthPoints > 0){
             //Increment Player Power for next round
@@ -117,9 +122,9 @@ function battle(challenger, defender){
             challenger.attackPower = playerPower
             challenger.experience = challenger.experience + .25
             $instructions.text(challenger.name.toUpperCase() + " WINS! Choose next opponent!")
-            
+                      
         }else{
-            $btnReset.removeClass("invisible");
+            $btnReset.removeClass("display_none");
          
             $instructions.text(challenger.name.toUpperCase() + " UNDEFEATED CHAMPION!")
         }
@@ -147,7 +152,7 @@ function Character(name, imagePath, attackPower,counterAttackPower){
 function createCard(character, panel, position) {
     
     newCard = $("<div>")
-    newCard.addClass("card bg-dark text-light text-center")
+    newCard.addClass("card bg-dark text-light text-center mb-2")
     newCardHeader = $("<div>")
     newCardHeader.appendTo(newCard)
     newCardBody = $("<div>")
@@ -162,6 +167,7 @@ function createCard(character, panel, position) {
         .text(character.name.toUpperCase())
 
     if (panel == "defender") {
+        
         newCard.addClass("js_defender")
 
         let newCardFooter = $("<div>")
@@ -185,6 +191,7 @@ function createCard(character, panel, position) {
     newCard.appendTo(position)
      
     if (panel == "character") {
+        
         $(position).on("click", function () {
             let arrDefenders = []
 
@@ -201,11 +208,12 @@ function createCard(character, panel, position) {
                     break;
             }
 
+            $defendersHeaderRow.removeClass("display_none")
             challenger = selectCharacter(character.name)
             createCard(challenger, "challenger", "#challenger")
             
             $(".js_character").remove();
-
+            
             for (var i = 1; i < 4; i++) {
                 $newSection = $("<section>")
                 $newSection
@@ -215,32 +223,44 @@ function createCard(character, panel, position) {
                 $newSection.appendTo($challengers)
 
             }
-debugger;
-            populateDefenders(arrDefenders)
+
+            $gameBoard.removeClass("display_none");           
+            populateDefenders(arrDefenders.slice(0));
 
         })
 
-
     } else if (panel == "defenders") {
-        $instructions.text("Choose opponent to fight!")
 
+        $instructions.text("Choose opponent to fight!")
+       
         $(position).on("click", function () {
+            
+
+            if ($(".js_defenderHealth")[0]){
+                $instructions.text("Oponent selected; please click ATTACK button.")
+                
+            }else{
+                $instructions.text("Click Attack button to fight!")
+                defender = selectCharacter(character.name)
+                createCard(defender, "defender", "#defender")
+                $(this).empty();
+                $btnAttack.removeClass("display_none");
+                $report1.empty();
+                $report2.empty();
+                $(window).scrollTop($("#top").offset().top);
+                if(wins=="2"){
+                    $defendersHeaderRow.addClass("display_none")
+                }
+               
+            }
           
-            $instructions.text("Click Attack button to fight!")
-            defender = selectCharacter(character.name)
-            createCard(defender, "defender", "#defender")
-            $(this).empty();
-            $btnAttack.removeClass("invisible");
-            $report1.empty();
-            $report2.empty();
+            
+            
         })
 
     }
 
 }
-
-
-
 
 
 function populateCharacterArrays(){
@@ -255,15 +275,13 @@ function populateCharacterArrays(){
     arrVillains.push(pyro = new Character("Pyro", "/assets/images/characters/pyro.jpg", 33, 30))
 }
 function populateDefenders(arrDefenders) {
-debugger;
+
     //Randomly Arrange Defenders
     for (var i = 1; i <= 3; i++) {
         let charIdx = Math.floor(Math.random() * arrDefenders.length)
         let character = arrDefenders[charIdx]
-        //createCard(character, "defenders", ".js_defender" + i)
         createCard(character, "defenders", "#defender" + i)
-
-        //Remove from array so duplicate won't be selected
+       
         arrDefenders.splice(charIdx, 1)
     }
 }
@@ -271,20 +289,22 @@ function resetGame(Heros,Villains) {
 
     gameStatus=0
     wins=0
-    $btnReset.addClass("invisible");
+    $btnReset.addClass("display_none");
             
     $(".js_defenders").empty()
     $(".js_challenger").remove()
     $(".js_defender").remove()
     $report1.empty();
     $report2.empty();
-   
+   $gameBoard.addClass("display_none")
+   $btnAttack.addClass("display_none")
+   $btnReset.addClass("display_none")
     
     var audio = new Audio("/assets/sound/welcomeprof.wav");
-    //audio.play();
+    audio.play();
     
     $challengers.empty()
-
+    
     for(var i = 1; i < 5;i++){
         $newSection = $("<section>")
         $newSection
@@ -293,7 +313,7 @@ function resetGame(Heros,Villains) {
         $newSection.appendTo($challengers)
     }
     
-    populateCharacterArrays()
+    //populateCharacterArrays()
    
     $instructions.addClass("text-center text-light mt-4 p-4 bg-dark")
     $instructions.text("Choose your Champion!")
@@ -302,9 +322,6 @@ function resetGame(Heros,Villains) {
     for (var i = 1; i < 3; i++) {
         charIdx = Math.floor(Math.random() * Heros.length)
         var character = Heros[charIdx]
-        // $("#character" + i)
-        //     .attr("src", character.imagePath)
-        //     .attr("alt", character.name)
         createCard(character,"character","#character" + i)
         Heros.splice(charIdx, 1)
     }
@@ -313,25 +330,13 @@ function resetGame(Heros,Villains) {
     for (var i = 3; i < 5; i++) {
         let charIdx = Math.floor(Math.random() * Villains.length)
         var character = Villains[charIdx]
-        // $("#character" + i)
-        //     .attr("src", character.imagePath)
-        //     .attr("alt", character.name)
-        //     .attr("data-value", arrVillains[charIdx].name.toLowerCase())
         createCard(character,"character","#character" + i)
         Villains.splice(charIdx, 1)
     }
-
-    debugger;
-    console.log(Heros)
-    console.log(arrHeros)
-    console.log(Villains)
-    console.log(arrVillains)
-   
+       
     //Repopulate Charcter Arrays For Later Use
-    populateCharacterArrays()
-
-    
-  
+    //populateCharacterArrays()
+ 
 }
 
 //Select Character When User Selects Image
@@ -370,11 +375,7 @@ function selectCharacter(characterName) {
 
 
 
-//createCard(wolverine)
-
-
-
-
+//TESTING PURPOSES ONLY BELOW
 
 function testSimulator(attacker, defender1, defender2, defender3){
 
@@ -391,21 +392,18 @@ function testSimulator(attacker, defender1, defender2, defender3){
     while(gameStatus==0 && wins==2){
         battle(attacker,defender3)
         //debugger;
-
     }
-
-
 
 }
 //Magneto Attacks
-//  gameStatus=0
-//  wins=0  
-//  testSimulator(magneto,storm,wolverine, rogue)
-//  console.log("--------------------------------------------------------------------")
-//  resetGame()
-//  gameStatus=0
-//  wins=0  
-//  testSimulator(magneto,wolverine,storm, rogue)
+// gameStatus=0
+// wins=0  
+// testSimulator(magneto,storm,wolverine, rogue)
+// console.log("--------------------------------------------------------------------")
+// resetGame()
+// gameStatus=0
+// wins=0  
+// testSimulator(magneto,wolverine,storm, rogue)
 // console.log("--------------------------------------------------------------------")
 // resetGame()
 // gameStatus=0
@@ -460,6 +458,3 @@ function testSimulator(attacker, defender1, defender2, defender3){
 // wins=0  
 // testSimulator(pyro,rogue,wolverine, storm)
 // console.log("--------------------------------------------------------------------")
-
-
-
