@@ -265,7 +265,7 @@ function createCard(character, panel, position) {
 
 function populateCharacterArrays(){
     arrHeros = []
-    arrHeros.push(wolverine = new Character("Wolverine", "/assets/images/characters/wolverine.jpg", 32, 20))
+    arrHeros.push(wolverine = new Character("Wolverine", "assets/images/characters/wolverine.jpg", 32, 20))
     arrHeros.push(storm = new Character("Storm", "/assets/images/characters/storm.jpg", 33, 30))
     arrHeros.push(rogue = new Character("Rogue", "/assets/images/characters/rogue.jpg", 34, 75))
 
@@ -300,7 +300,7 @@ function resetGame(Heros,Villains) {
    $btnAttack.addClass("display_none")
    $btnReset.addClass("display_none")
     
-    var audio = new Audio("/assets/sound/welcomeprof.wav");
+    var audio = new Audio("assets/sound/welcomeprof.wav");
     audio.play();
     
     $challengers.empty()
