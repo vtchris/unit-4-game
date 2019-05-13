@@ -44,6 +44,7 @@ populateCharacterArrays();
 resetGame(arrHeros.slice(0),arrVillains.slice(0))
 //resetGame()
 
+
 function battle(challenger, defender){
     //  console.log("START")
     //  console.log(challenger)
@@ -289,20 +290,16 @@ function resetGame(Heros,Villains) {
 
     gameStatus=0
     wins=0
-    $btnReset.addClass("display_none");
-            
+                
     $(".js_defenders").empty()
     $(".js_challenger").remove()
     $(".js_defender").remove()
     $report1.empty();
     $report2.empty();
-   $gameBoard.addClass("display_none")
-   $btnAttack.addClass("display_none")
-   $btnReset.addClass("display_none")
-    
-    var audio = new Audio("assets/sound/welcomeprof.wav");
-    audio.play();
-    
+    $gameBoard.addClass("display_none")
+    $btnAttack.addClass("display_none")
+    $btnReset.addClass("display_none")
+          
     $challengers.empty()
     
     for(var i = 1; i < 5;i++){
@@ -333,10 +330,15 @@ function resetGame(Heros,Villains) {
         createCard(character,"character","#character" + i)
         Villains.splice(charIdx, 1)
     }
-       
+          
     //Repopulate Charcter Arrays For Later Use
     //populateCharacterArrays()
- 
+
+        var audio = new Audio("assets/sound/welcomeprof.wav");
+        audio.play();
+     
+   
+  
 }
 
 //Select Character When User Selects Image
