@@ -14,6 +14,8 @@ https://vtchris.github.io/unit-4-game/
 
 <p>This project was intended to reinforce jQuery and Javascript skills. I also took the opportunity to work on Bootstrap skills. The relevant project instructions and requirements follow. Instead of having the player you select fight against the players you didn't select, I grouped the characters into Hero and Villain arrays, the characters are randomly selected and placed on the board. Thanks for playing, and have fun!</p>
 
+![](assets/images/rpg-1.jpeg)
+
 <h2>Mission (Homework)</h2> 
 # unit-4-game
 jQuery game
