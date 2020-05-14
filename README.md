@@ -12,7 +12,7 @@ https://vtchris.github.io/unit-4-game/
      <li>HTML/CSS</li>
 </ul>
 
-<p>This project was intended to reinforce jQuery and Javascript skills. I also took the opportunity to work on Bootstrap skills. The relevant project instructions and requirements follow. Instead of having the player you select fight against the players you didn't select, I grouped the characters into Hero and Villain arrays, the characters are randomly selected and placed on the board. Thanks for playing, and have fun!</p>
+<p>This project was intended to reinforce jQuery and JavaScript skills. I also took the opportunity to work on Bootstrap skills. The relevant project instructions and requirements follow. Instead of having the player you select fight against the players you didn't select, I grouped the characters into Hero and Villain arrays, the characters are randomly selected and placed on the board. Thanks for playing, and have fun!</p>
 
 ![](assets/images/rpg-1.jpg)
 
@@ -73,21 +73,3 @@ Choose whichever game you want to make from the choices below. The CrystalsColle
   * A winning player must pick their characters wisely by first fighting an enemy with low `Counter Attack Power`. This will allow them to grind `Attack Power` and to take on enemies before they lose all of their `Health Points`. Healing options would mess with this dynamic.
 
 * Your players should be able to win and lose the game no matter what character they choose. The challenge should come from picking the right enemies, not choosing the strongest player.
-
-### Minimum Requirements
-
-Attempt to complete homework assignment as described in instructions. If unable to complete certain portions, please pseudocode these portions to describe what remains to be completed. Adding a README.md as well as adding this homework to your portfolio are required as well and more information can be found below.
-
-- - -
-
-### Add To Your Portfolio
-
-After completing the homework please add the piece to your portfolio. Make sure to add a link to your updated portfolio in the comments section of your homework so the TAs can easily ensure you completed this step when they are grading the assignment. To receive an 'A' on any assignment, you must link to it from your portfolio.
-
-- - -
-
-### One More Thing
-
-If you have any questions about this project or the material we have covered, please post them in the community channels in slack so that your fellow developers can help you! If you're still having trouble, you can come to office hours for assistance from your instructor and TAs.
-
-**Good Luck!**
